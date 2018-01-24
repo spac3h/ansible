@@ -1,0 +1,6 @@
+[web-vms]
+ans-web[01:02] disk='10' datastore='DSC-AMA-VNX_LW_MIX01' network='0211_192.168.211.0_24' memory='256' cpucount='1' osid='Centos64Guest'
+
+[db-vms]
+
+ans-db[01:03] disk='20' datastore='SSD-Pool_ELKStack_dev (NAS01)' network='vSS-OpenStack_Default' memory='1024' cpucount='2' osid='rhel6_64Guest'

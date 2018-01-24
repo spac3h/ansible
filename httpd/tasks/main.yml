@@ -1,0 +1,32 @@
+---
+  - name: Install httpd
+    yum: name=httpd state=present
+
+  - name: Start httpd
+    service: name=httpd state=started  
+
+  - name: Enable httpd
+    service: name=httpd enabled=yes
+
+  - name: Intall PHP
+    yum: name=php state=present
+
+  - name: Install PHP-MySql
+    yum: name=php-mysql state=present
+
+  - name: Intall mod_ssl
+    yum: name=mod_ssl state=present
+
+  - name: Configure Virtual Host
+    template:
+       dest: /etc/httpd/conf.d/{{ url_host }}.conf
+       src: vhost.conf.j2
+       group: root
+       owner: root
+       mode: 0644
+
+  - name: Create Logs Folder
+    file: path=/var/log/{{ url_host }} state=directory
+
+  - name: Restart http
+    service: name=httpd state=restarted

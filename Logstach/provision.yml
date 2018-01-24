@@ -1,0 +1,34 @@
+---
+- hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: Add Logstash Repo
+      rhn_channel:
+        name: logstash-2.2
+        sysname: '{{ ansible_hostname }}'
+        url: https://as01prdrepolinux/rpc/api
+        user: amait
+        password: 
+
+    - name: Install Logstash
+      yum:
+        name: logstash
+        state: present
+
+    - name: Start Logstash Service
+      systemd:
+        name: logstash
+        state: started
+
+    - name: Enable Logstash Service
+      systemd:
+        name: logstash
+        enabled: yes
+        masked: no
+  
+    - name: Add ELK_server_private_ip to /etc/pki/tls/openssl.cnf
+      lineinfile:
+        path: /etc/pki/tls/openssl.cnf
+        regexp: '# subjectAltName=email:copy'
+        line: 'subjectAltName={{ ansible_ip }}'    

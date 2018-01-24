@@ -1,0 +1,12 @@
+---
+- hosts: all
+  gather_facts: no
+  vars_files:
+     - vars.yml
+
+  tasks:
+     - include: tasks/main.yml 
+    
+       environment:
+          http_proxy: http://localhost:8118
+          https_proxy: https://localhost:8118   

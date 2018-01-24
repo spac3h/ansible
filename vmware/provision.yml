@@ -1,0 +1,25 @@
+---
+- hosts: 127.0.0.1
+  connection: local
+  user: root
+  sudo: false
+  gather_facts: false
+  serial: 1
+ 
+
+  tasks:  
+    - name: get vmguest facts
+      delegate_to: localhost
+      vsphere_guest:
+        vmware_guest_facts: true
+        vcenter_hostname: 172.31.7.10
+        username: sergio.cardoso 
+        password: 
+        guest: FE01PPRSCAP
+      register: vmguest_facts
+      tags: vmfacts
+
+    - name: debug facts
+      debug: msg="vmguest facts are {{ vmguest_facts }}"
+      tags: vmfacts
+

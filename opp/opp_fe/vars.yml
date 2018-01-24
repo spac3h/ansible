@@ -1,0 +1,4 @@
+---
+  date: "{{ lookup('pipe', 'date +%Y%m%d-%H%M') }}"
+  git_user: "administrator"
+  git_pass: "qAENmvFC7LtbEBeK6Qjc"

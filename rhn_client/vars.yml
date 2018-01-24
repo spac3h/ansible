@@ -1,0 +1,31 @@
+---
+system_packages_centos:
+  - libselinux-python
+  - vim
+  - mc
+  - telnet
+  - wget
+  - net-tools
+  - tcpdump
+    #- mysql
+  - sudo
+  - curl
+  - links
+  - dmidecode
+  - iotop
+  - sysstat 
+  - lsof
+  - iptraf
+  - strace
+  - openssh-clients
+  - screen
+  - man
+  - perl
+  - vim-enhanced
+  - rhn-client-tools
+  - rhn-check
+  - rhn-setup
+  - rhnsd
+  - m2crypto
+  - yum-rhn-plugin
+  - ntp

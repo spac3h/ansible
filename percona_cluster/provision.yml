@@ -1,0 +1,9 @@
+---
+- hosts: all
+  gather_facts: yes
+
+  tasks:
+  - include: tasks/main.yml
+
+  vars_files:
+    - vars.yml

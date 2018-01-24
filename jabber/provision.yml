@@ -1,0 +1,15 @@
+---
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: no
+  vars_files:
+     - vars.yml
+
+  tasks:
+   - jabber:
+       user: sergio.cardoso@ama.gov.pt 
+       host: dtc-cup1.net.ama.lan
+       port: 5222
+       password: ""
+       to: paulo.duarte@ama.gov.pt 
+       msg: Ta no HORA ou vais embora?????

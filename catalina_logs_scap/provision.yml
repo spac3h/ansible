@@ -1,0 +1,18 @@
+---
+- hosts: all
+  vars_files:
+    - vars.yml
+  gather_facts: true
+
+  tasks:
+    - name: Empty logs dir
+      shell: rm -rf logs/*
+      delegate_to: localhost
+
+    - name: Fetch logs
+      fetch: src={{ item }} dest=logs/{{ item }}{{ ansible_hostname }}.log flat=yes 
+      with_items: '{{ catalina_logs }}'
+
+    - name: Compress Logs
+      shell: tar czf logs/logs.tgz logs/home
+      delegate_to: localhost

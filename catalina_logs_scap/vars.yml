@@ -1,0 +1,7 @@
+---
+catalina_logs: 
+    - '/home/jboss/jboss/standalone/log/server.log'
+    - '/home/psa_dre/tomcat/logs/system.log'
+    - '/home/psa_dre/tomcat/logs/catalina.out'
+    - '/home/scap_core/jboss/standalone/log/server.log'
+    - '/home/scap_dre/tomcat/logs/system.log'

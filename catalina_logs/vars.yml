@@ -1,0 +1,6 @@
+---
+catalina_logs: 
+    - '/opt/liferay-portal-6.1.30-ee-ga3/tomcat-7.0.40/logs/catalina.out'
+    - '/opt/liferay-portal-6.0.6/tomcat-6.0.29/logs/catalina.out'
+    - '/opt/liferay-portal-6.2-ee-sp12/tomcat-7.0.42/logs/catalina.out'
+    - '/opt/tomcat/logs/catalina.out'

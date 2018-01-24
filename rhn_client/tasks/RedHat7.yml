@@ -1,0 +1,127 @@
+---
+  - name: Update System Packages
+    yum:
+        name: '*'
+        state: latest
+    environment:
+        http_proxy: http://localhost:8118
+        https_proxy: https://localhost:8118
+
+
+  - name: Install required system packages.
+    yum: name={{ item }} state=present
+    with_items: '{{ system_packages_centos }}'
+    environment:
+        http_proxy: http://localhost:8118
+        https_proxy: https://localhost:8118
+
+  - name: Customize history
+    lineinfile: dest=~/.bash_profile line="export HISTTIMEFORMAT=\"%d/%m/%y %T \""
+
+  - name: Add server repolinux to hosts file
+    lineinfile: dest=/etc/hosts line="172.31.10.25    as01prdrepolinux"
+
+  - name: Add hostname and IP to hosts file
+    lineinfile: dest=/etc/hosts line={{ ansible_default_ipv4.address }}	{{ ansible_nodename }}
+
+  - name: Install VMware tools 
+    yum: pkg="open-vm-tools" state=present
+    environment:
+        http_proxy: http://localhost:8118
+        https_proxy: https://localhost:8118
+ 
+  - name: Enabling and starting -> vmtoolsd 
+    service: name=vmtoolsd enabled=yes state=started
+
+  - name: Stop Firewalld
+    service: name=firewalld state=stopped
+
+  - name: Disable firewalld
+    service: name=firewalld enabled=no
+
+  - name: Disable SELinux
+    selinux: state=disabled
+
+  - name: Set SELinux permissive
+    selinux: policy=targeted state=disabled
+
+  - name: Add user scomlinux
+    user: name=scomlinux password=$6$SNz4k19y65g$lmMzZ2ybBV.iQChzted3EDEdrXm4NaTZvcko6llEbqp8EhvUGthPiA/BlDa0WxJomEenLVwstChtT.Vx35tc50 
+
+  - name: Add user scomlinuxelevated
+    user: name=scomlinuxelevated password=$6$rlIEo0m1Py0vPi$DdIowe9wmh6dXKLbOrXttTf713k04sC.JFi6AOvSQDPi5bbcWTAnpAp8l7mOEL7pRxsAiybqFBFpI4rZ8HHSR/
+
+  - name: Add user scomlinux to sudoers file
+    lineinfile: 'dest=/etc/sudoers line="scomlinux  ALL=(root) NOPASSWD: ALL"'
+
+  - name: Add user scomlinuxelevated to sudoers file
+    lineinfile: 'dest=/etc/sudoers line="scomlinuxelevated  ALL=(root) NOPASSWD: ALL"'
+
+  - name: Add user scomlinux defaults to sudoers file
+    lineinfile: dest=/etc/sudoers line="Defaults:scomlinux !requiretty"
+
+  - name: Add user scomlinux defaults to sudoers file
+    lineinfile: dest=/etc/sudoers line="Defaults:scomlinuxelevated !requiretty"
+
+  - name: Add Gil Vieira SSH Key
+    authorized_key: user=root key="{{ lookup('file', 'ssh_keys/gv_public.pub') }}"
+
+  - name: Add Marcio Fidalgo SSH Key
+    authorized_key: user=root key="{{ lookup('file', 'ssh_keys/mf_public.pub') }}"
+
+  - name: Add Pedro Silva SSH Key
+    authorized_key: user=root key="{{ lookup('file', 'ssh_keys/ps_public.pub') }}"
+
+  - name: Add Samuel Correia 
+    authorized_key: user=root key="{{ lookup('file', 'ssh_keys/samc_public.pub') }}"
+
+    #  - name: Create Repos Backup Dir
+    #    file: path=/root/repobck state=directory owner=root group=root mode=0755  
+    #
+    #  - name: Move Repos
+    #    shell: mv /etc/yum.repos.d/*.repo /root/repobck/
+    #    ignore_errors: yes
+    #
+    #  - name: Download Spacewalk Certificates
+    #    get_url:
+    #      url: http://172.31.10.25/pub/rhn-org-trusted-ssl-cert-1.0-1.noarch.rpm
+    #      dest: /tmp/rhn-org-trusted-ssl-cert-1.0-1.noarch.rpm
+    #  
+    #  - name: Install SpaceWalk Certificates
+    #    yum:
+    #      name: /tmp/rhn-org-trusted-ssl-cert-1.0-1.noarch.rpm
+    #      state: present
+    #    ignore_errors: yes
+    #
+    #  - rhn_register:
+    #      state: present
+    #      activationkey: 1-centos72x64
+    #      sslcacert: /usr/share/rhn/RHN-ORG-TRUSTED-SSL-CERT
+    #      server_url: https://as01prdrepolinux/XMLRPC
+    #
+    #  - name: Install RPM Key Base
+    #    rpm_key:
+    #      state: present
+    #      key: http://as01prdrepolinux/pub/gpgkeys/RPM-GPG-KEY-CentOS-7
+    #
+    #  - name: Install RPM Key EPEL
+    #    rpm_key:
+    #      state: present
+    #      key: http://as01prdrepolinux/pub/gpgkeys/RPM-GPG-KEY-EPEL-7
+    #    
+    #  - name: Add EPEL_7 Repo
+    #    rhn_channel:
+    #      name: epel7_x64
+    #      sysname: '{{ ansible_hostname }}'
+    #      url: https://as01prdrepolinux/rpc/api
+    #      user: amait
+    #      password: 7ygv6tfc
+    #      
+    #
+    #  - name: Clean yum Repo
+    #    command: yum clean all
+    #
+    #  - name: Yum Update all packages
+    #    yum:
+    #      name: '*'
+    #      state: latest

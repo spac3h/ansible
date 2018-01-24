@@ -1,0 +1,27 @@
+---
+- hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: Install Kibana 
+      yum:
+        name: https://artifacts.elastic.co/downloads/kibana/kibana-5.2.1-x86_64.rpm
+        state: present
+
+    - name: Configure Kibana Binding
+      replace:
+        dest: /etc/kibana/kibana.yml
+        regexp: '#server.host: "localhost"'
+        replace: 'server.host: "0.0.0.0"' 
+        backup: yes
+
+    - name: Restart Kibana
+      systemd:
+        name: kibana
+        state: restarted
+
+    - name: Enable Kibana Service
+      systemd:
+        name: kibana
+        enabled: yes
+        masked: no

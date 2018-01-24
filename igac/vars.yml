@@ -1,0 +1,7 @@
+---
+system_packages_centos:
+  - okular 
+  - libcanberra-gtk2.i686 
+  - adwaita-gtk2-theme.i686 
+  - PackageKit-gtk3-module.i686 
+  - sssd-client.i686

@@ -1,0 +1,74 @@
+---
+- hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: Install Nginx 
+      yum:
+        name: nginx
+        state: latest
+
+    - name: Install httpd-tools
+      yum:
+        name: httpd-tools
+        state: latest
+
+    - name: Install python-passlib Library
+      yum:
+        name: python-passlib
+        state: latest
+
+
+    - name: Set htpasswd file path
+      set_fact: remote_file_path=/etc/nginx/htpasswd.users
+
+    - name: Create htpasswd file path
+      file: path="{{ remote_file_path }}" state=touch
+
+    - name: Check Remote File
+      stat: path="{{ remote_file_path }}"
+      register: file_path
+      
+    - name: Add Kibana Admin User
+      htpasswd:
+        path: /etc/nginx/htpasswd.users 
+        name: Administrator
+        password: '7ygv6tfc'
+        owner: root
+        group: root
+        mode: 0640
+
+    - name: Add Dev User
+      htpasswd:
+        path: /etc/nginx/htpasswd.users
+        name: dev
+        password: devpw
+        owner: root
+        group: root
+        mode: 0640
+
+    - name: Set Nginx conf file path
+      set_fact: remote_nginx_file=/etc/nginx/conf.d/kibana.conf
+
+    - name: Create Nginx Vhost
+      file: path="{{ remote_nginx_file }}" state=touch
+
+    - name: Copy Nginx vHost
+      copy:
+        src: kibana.conf 
+        dest: /etc/nginx/conf.d/kibana.conf
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Restart Nginx
+      systemd:
+        state: restarted
+        name: nginx
+
+    - name: Enable Nginx Service
+      systemd:
+        name: nginx
+        enabled: yes
+        masked: no
+

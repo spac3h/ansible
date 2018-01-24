@@ -1,0 +1,11 @@
+---
+- hosts: all
+  gather_facts: no
+
+  tasks:
+  - authorized_key: user=root key="{{ lookup('file', 'ssh_keys/gv_public.pub') }}"
+  - authorized_key: user=root key="{{ lookup('file', 'ssh_keys/mf_public.pub') }}"
+  - authorized_key: user=root key="{{ lookup('file', 'ssh_keys/pd_public.pub') }}"
+  - authorized_key: user=root key="{{ lookup('file', 'ssh_keys/pf_public.pub') }}"
+  - authorized_key: user=root key="{{ lookup('file', 'ssh_keys/ps_public.pub') }}"
+  - authorized_key: user=root key="{{ lookup('file', 'ssh_keys/samc_public') }}"

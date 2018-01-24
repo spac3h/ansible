@@ -1,0 +1,6 @@
+---
+# tasks file to check distro
+- include: RedHat7.yml
+  #  when: 
+  #  - ansible_os_family == 'RedHat'
+  #  - ansible_distribution_major_version == '7'

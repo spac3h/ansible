@@ -1,0 +1,45 @@
+---
+- hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: Add Elasticsearch Repo
+      rhn_channel:
+        name: elasticsearch-2.x
+        sysname: '{{ ansible_hostname }}'
+        url: https://as01prdrepolinux/rpc/api
+        user: amait
+        password: 
+
+    - name: Install RMP Key ElasticSearch
+      rpm_key:
+        state: present
+        key: http://as01prdrepolinux/pub/gpgkeys/GPG-KEY-elasticsearch
+
+    - name: Install ElasticSearch
+      yum:
+        name: elasticsearch
+        state: present
+
+    - name: Start ElasticSearch Service
+      systemd:
+        state: started
+        name: elasticsearch
+
+    - name: Enable ElasticSearch Service
+      systemd:
+        name: elasticsearch
+        enabled: yes
+        masked: no
+
+    - name: Configure ElasticSearch Binding
+      replace:
+        dest: /etc/elasticsearch/elasticsearch.yml
+        regexp: '# network.host: 192.168.0.1'
+        replace: 'network.host: 0.0.0.0'
+        backup: yes
+
+    - name: Restart ElasticSearch
+      systemd:
+        name: elasticsearch
+        state: restarted

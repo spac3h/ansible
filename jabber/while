@@ -1,0 +1,4 @@
+#!/bin/bash
+while true; do 
+	/home/sergiocardoso/sata/Ansible/jabber/ansible provision.yml
+done

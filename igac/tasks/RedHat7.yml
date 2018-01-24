@@ -1,0 +1,19 @@
+---
+  - name: Install required system packages.
+    yum: name={{ item }} state=present
+    with_items: '{{ system_packages_centos }}'
+
+  - copy:
+       src: /sata/Deploys/IMAGEM/ARTIFACTS/AdbeRdr9.5.5-1_i486linux_enu.rpm
+       dest: /opt/igacscripts/ARTIFACTS/
+
+  - name: install nginx rpm from a local file
+    yum:
+      name: /opt/igacscripts/ARTIFACTS/AdbeRdr9.5.5-1_i486linux_enu.rpm
+      state: present
+
+  - copy:
+       src: /sata/Deploys/IMAGEM/ICONS/default.jpg
+       dest: /usr/share/backgrounds/
+
+  

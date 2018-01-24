@@ -1,0 +1,10 @@
+---
+- hosts: all
+  gather_facts: no
+
+  tasks:
+  - name: Renew SCOM Certificate
+    shell: /opt/microsoft/scx/bin/tools/scxsslconfig -f -v
+
+  - name: Restart SCOM client
+    shell: /opt/microsoft/scx/bin/tools/scxadmin -restart

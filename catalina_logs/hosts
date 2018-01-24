@@ -1,0 +1,13 @@
+[prod-pmc]
+as01prdportais
+as02prdportais
+[preprod-pmc]
+as01pprportais
+as02pprportais
+[preprod-doccidadao]
+FE01PPRDOCCIDADAO
+[preprod-eidas]
+as01ppreidas
+[prod-doccidadao]
+AS01PRDDOCCIDADAO
+AS02PRDDOCCIDADAO

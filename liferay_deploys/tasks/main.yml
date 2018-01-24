@@ -1,0 +1,83 @@
+---
+  - name: Truncate control file
+    shell: truncate -s 0 test
+    delegate_to: localhost
+
+  - name: test vars
+    shell: ls {{ item }} | xargs -n1 basename | sed 's/....$//' >> test
+    with_fileglob: wars/*.war
+    delegate_to: localhost
+
+  - name: create backup dir
+    shell: mkdir /backup/`date +"%Y%m%d"`
+
+  - name: backup all webapps
+    shell: cp -rf /opt/liferay-portal-6.1.30-ee-ga3/tomcat-7.0.40/webapps/ /backup/webapps`date +"%Y%m%d"`/
+
+  - name: backup webapp
+    shell: cp -rf /opt/liferay-portal-6.1.30-ee-ga3/tomcat-7.0.40/webapps/{{ item }} /backup/`date +"%Y%m%d"`/
+    with_lines: cat test
+    ignore_errors: yes
+
+  - name: remove webapps
+    shell: rm -rf /opt/liferay-portal-6.1.30-ee-ga3/tomcat-7.0.40/webapps/{{ item }}
+    with_lines: cat test
+
+  - name: Stop tomcat
+    shell: /opt/liferay-portal-6.1.30-ee-ga3/tomcat-7.0.40/bin/shutdown.sh    
+
+  - name: Wait for Liferay Shutdown
+    wait_for: port=8080 delay=30 state=stopped
+
+  - name: remove temp files
+    shell: rm -rf /opt/liferay-portal-6.1.30-ee-ga3/tomcat-7.0.40/temp/*
+
+  - name: remove aditional temp files
+    shell: rm -rf /opt/liferay-portal-6.1.30-ee-ga3/tomcat-7.0.40/work/Catalina/localhost/*
+
+  - name: Copy files to deploy
+    copy: src="{{ item }}" dest=/opt/liferay-portal-6.1.30-ee-ga3/deploy/ owner=root group=root mode=0644
+    with_fileglob: wars/*.war
+
+  - name: Execute SQL scripts if needed
+    pause: prompt="Caso seja necessário execute os scripts SQL e pressione qualquer tecla para continuar"
+
+  - name: Start tomcat
+    shell: /opt/liferay-portal-6.1.30-ee-ga3/tomcat-7.0.40/bin/startup.sh
+
+  - name: truncate control file
+    shell: truncate -s 0 /backup/control.out
+
+  - name: Create control file
+    shell: tail -f /opt/liferay-portal-6.1.30-ee-ga3/tomcat-7.0.40/logs/catalina.out > /backup/control.out
+    async: 1000
+    poll: 0
+
+  - name: wait for liferay to start
+    wait_for: path=/backup/control.out search_regex='Server startup in'
+
+  - name: Stop control file
+    shell: pkill -P $(ps -ef |grep tail| grep control| awk '{ print $2 }')
+
+  - name: Property files
+    shell: /opt/propertyfiles/batchCopy.sh
+
+  - name: Stop tomcat
+    shell: /opt/liferay-portal-6.1.30-ee-ga3/tomcat-7.0.40/bin/shutdown.sh
+
+  - name: Wait for Liferay Shutdown
+    wait_for: port=8080 delay=30 state=stopped
+
+  - name: Start tomcat
+    shell: /opt/liferay-portal-6.1.30-ee-ga3/tomcat-7.0.40/bin/startup.sh
+
+  - name: wait for liferay to start
+    wait_for: port=8080 delay=10
+
+  - name: lookup start
+    uri: url=http://localhost:8080/ status_code=200 timeout=300
+
+  - name: Truncate control file
+    shell: truncate -s 0 test
+    delegate_to: localhost
+

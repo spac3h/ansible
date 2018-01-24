@@ -1,0 +1,5 @@
+---
+  date: "{{ lookup('pipe', 'date +%Y%m%d-%H%M') }}"
+  git_user: "administrator"
+  git_pass: "qAENmvFC7LtbEBeK6Qjc"
+  dump: "/root/OPP/dumps/mongodb-opp.gov.pt-opp-2017-03-14-11~57~01"

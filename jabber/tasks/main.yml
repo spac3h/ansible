@@ -1,0 +1,18 @@
+---
+  - name: Backup Database
+    command: mongodump -h localhost -u libertrium -p 00pportu84l --out backup_mongo_{{ date }}.mongo
+    args:
+      chdir: /root/backups/
+
+  - name: Clone Git Repo
+    git:
+      repo: "https://{{ git_user | urlencode}}:{{ git_pass }}@appcontrol.ama.lan/OPP/OPP.git"
+      dest: /root/OPP
+
+  - name: Restore Database
+    command: mongorestore -h localhost -u libertrium -p 00pportu84l {{ dump }}/ --drop 
+    args:
+      chdir: /root/OPP/dumps/
+
+  - name: Remove Git Clone
+    file: path=/root/OPP state=absent

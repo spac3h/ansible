@@ -1,0 +1,8 @@
+---
+- hosts: all
+  vars_files:
+    - vars.yml
+  tasks:
+  - include: tasks/main.yml
+    ssl_certs_common_name: "preprod.opp.gov.pt"
+
