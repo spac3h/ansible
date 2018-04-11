@@ -4,5 +4,5 @@
     - vars.yml
   tasks:
   - include: tasks/main.yml
-    ssl_certs_common_name: "preprod.opp.gov.pt"
+    ssl_certs_common_name: "tes.com"
 

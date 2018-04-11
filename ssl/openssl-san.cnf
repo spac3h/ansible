@@ -8,10 +8,10 @@ distinguished_name = req_distinguished_name
 [ v3_req ]
 
 # Extensions to add to a certificate request
-
 basicConstraints = CA:FALSE
 keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 subjectAltName = @alt_names
 
 [alt_names]
-DNS.1 = preprod.opp.gov.pt
+DNS.1 = tes.com 
+DNS.2 = tes2.com 
